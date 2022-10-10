@@ -62,7 +62,8 @@ CREATE TABLE grupo2.PEDIDOS (
 CREATE TABLE grupo2.DETALLE_PEDIDO (
 	id_detalle_pedido  varchar(10) NOT NULL CONSTRAINT pk_detalle_pedido PRIMARY KEY (id_detalle_pedido), 
 	cantidad_solicitada int,
-	fecha_entrega datetime,
+	fecha_entrega_ofrec datetime datetime,
+	fecha_entrega_real datetime datetime,
 	cantidad_entregada int,
 	id_producto varchar(10),
 	id_pedido varchar(10)
