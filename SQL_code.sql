@@ -1,8 +1,105 @@
-/*VERIFICACIÓN DE EXISTENCIA DE TABLAS*//*1*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;/*2*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;	/*3*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;/*4*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;/*5*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;/*6*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;/*7*/ IF OBJECT_ID('PRODUCTOS') IS NOT NULL DROP TABLE PRODUCTOS;/*CREACIÓN DE TABLAS (SE INCLUYE EL PK)*//* PRODUCTOS (TABLA MAESTRA)*/ CREATE TABLE grupo2.PRODUCTOS (	id_producto varchar(10) NOT NULL CONSTRAINT pk_productos PRIMARY KEY (id_producto), 	id_categoria varchar(10), 	nombre  varchar(max),	precio float  )/* CATEGORIA (TABLA MAESTRA)*/CREATE TABLE grupo2.CATEGORIA (	id_categoria  varchar(10) NOT NULL CONSTRAINT pk_categoria PRIMARY KEY (id_categoria) , 	nombre_categoria varchar(max)  )/* UBIGEO (TABLA MAESTRA)*/CREATE TABLE grupo2.UBIGEO (	id_ubigeo  varchar(10) NOT NULL CONSTRAINT pk_ubigeo PRIMARY KEY (id_ubigeo), 	departamento varchar(max) ,	provincia varchar(max) , 	distrito varchar(max) 
-)/* TIPO_TRANSPORTE (TABLA MAESTRA)*/CREATE TABLE grupo2.TIPO_TRANSPORTE (	id_tipo_transporte  varchar(10) NOT NULL CONSTRAINT pk_tipo_transporte PRIMARY KEY (id_tipo_transporte) , 	costo float,
+/*VERIFICACIÓN DE EXISTENCIA DE TABLAS*/
+/*1*/ IF OBJECT_ID('grupo2.PRODUCTOS') IS NOT NULL DROP TABLE grupo2.PRODUCTOS;	
+/*2*/ IF OBJECT_ID('grupo2.UBIGEO') IS NOT NULL DROP TABLE grupo2.UBIGEO;
+/*3*/ IF OBJECT_ID('grupo2.TIPO_TRANSPORTE') IS NOT NULL DROP TABLE grupo2.TIPO_TRANSPORTE;
+/*4*/ IF OBJECT_ID('grupo2.PEDIDOS') IS NOT NULL DROP TABLE grupo2.PEDIDOS;
+/*5*/ IF OBJECT_ID('grupo2.DETALLE_PEDIDO') IS NOT NULL DROP TABLE grupo2.DETALLE_PEDIDO;
+/*6*/ IF OBJECT_ID('grupo2.CLIENTE') IS NOT NULL DROP TABLE grupo2.CLIENTE;
+
+/*ELIMINACIÓN DE CONSTRAINS*/
+alter table grupo2.CLIENTE
+drop constraint fk_grupo2_cliente_ubigeo
+
+alter table grupo2.PEDIDOS
+drop constraint fk_grupo2_pedidos_tipo_transporte
+
+alter table grupo2.PEDIDOS
+drop constraint fk_grupo2_pedidos_cliente
+
+alter table grupo2.DETALLE_PEDIDO
+drop constraint fk_grupo2_detalle_pedido_producto
+
+alter table grupo2.DETALLE_PEDIDO
+drop constraint fk_grupo2_detalle_pedido_pedido
+
+
+/*CREACIÓN DE TABLAS (SE INCLUYE EL PK)*/
+
+/* PRODUCTOS (TABLA MAESTRA)*/
+ CREATE TABLE grupo2.PRODUCTOS (
+	id_producto varchar(10) NOT NULL CONSTRAINT pk_productos PRIMARY KEY (id_producto), 
+	nombre  varchar(max),
+	categoria varchar(max),
+	precio float  
+)
+
+
+/* UBIGEO (TABLA MAESTRA)*/
+CREATE TABLE grupo2.UBIGEO (
+	id_ubigeo  varchar(10) NOT NULL CONSTRAINT pk_ubigeo PRIMARY KEY (id_ubigeo), 
+	departamento varchar(max) ,
+	provincia varchar(max) , 
+	distrito varchar(max) 
+)
+
+/* TIPO_TRANSPORTE (TABLA MAESTRA)*/
+CREATE TABLE grupo2.TIPO_TRANSPORTE (
+	id_tipo_transporte  varchar(10) NOT NULL CONSTRAINT pk_tipo_transporte PRIMARY KEY (id_tipo_transporte) , 
+	costo float,
 	nombre varchar(max)
-)/* PEDIDOS (TABLA TRANSACCIONAL)*/CREATE TABLE grupo2.PEDIDOS (	id_pedido  varchar(10) NOT NULL CONSTRAINT pk_pedidos PRIMARY KEY (id_pedido) , 	fecha_pedido datetime ,  	estado_pedido char(1),	id_tipo_transporte varchar(10),	id_cliente varchar(10) )/* DETALLE_PEDIDO (TABLA TRANSACCIONAL)*/CREATE TABLE grupo2.DETALLE_PEDIDO (	id_detalle_pedido  varchar(10) NOT NULL CONSTRAINT pk_detalle_pedido PRIMARY KEY (id_detalle_pedido), 	cantidad_solicitada int,	fecha_entrega datetime,	cantidad_entregada int,	id_producto varchar(10),	id_pedido varchar(10) )/* CLIENTE (TABLA TRANSACCIONAL)*/CREATE TABLE grupo2.CLIENTE (	id_cliente  varchar(10) NOT NULL CONSTRAINT pk_cliente PRIMARY KEY (id_cliente), 	id_ubigeo   varchar(10) , 	dni char(8) ,	telefono char(9), 	direccion varchar(max),	nombre varchar(max) )/*CREACIÓN DE FK*//*RELACIÓN PRODUCTOS <> CATEGORIA*/alter table grupo2.PRODUCTOSdrop constraint fk_grupo2_productos_categoriaalter table grupo2.PRODUCTOS
-add constraint fk_grupo2_productos_categoria foreign key (id_categoria) references grupo2.CATEGORIA (id_categoria)/*RELACIÓN CLIENTE <> UBIGEO*/alter table grupo2.CLIENTEdrop constraint fk_grupo2_cliente_ubigeoalter table grupo2.CLIENTE
-add constraint fk_grupo2_cliente_ubigeo foreign key (id_ubigeo) references grupo2.UBIGEO (id_ubigeo)/*RELACIÓN PEDIDOS <> TIPO TRANSPORTE*/alter table grupo2.PEDIDOSdrop constraint fk_pedidos_tipo_transportealter table grupo2.PEDIDOS
-add constraint fk_grupo2_pedidos_tipo_transporte foreign key (id_tipo_transporte) references grupo2.TIPO_TRANSPORTE (id_tipo_transporte)/*RELACIÓN PEDIDOS <> CLIENTE*/alter table grupo2.PEDIDOSdrop constraint fk_grupo2_pedidos_clientealter table grupo2.PEDIDOSadd constraint fk_grupo2_pedidos_cliente foreign key (id_cliente) references grupo2.CLIENTE(id_cliente)/*RELACIÓN DETALLE PEDIDO <> PRODUCTO*/alter table grupo2.DETALLE_PEDIDOdrop constraint fk_grupo2_detalle_pedido_productoalter table grupo2.DETALLE_PEDIDO
-add constraint fk_grupo2_detalle_pedido_producto foreign key (id_producto) references grupo2.PRODUCTOS (id_producto)/*RELACIÓN DETALLE PEDIDO <> PEDIDO*/alter table grupo2.DETALLE_PEDIDOdrop constraint fk_grupo2_detalle_pedido_pedidoalter table grupo2.DETALLE_PEDIDOadd constraint fk_grupo2_detalle_pedido_pedido foreign key (id_pedido) references grupo2.PEDIDOS(id_pedido)
+)
+
+/* PEDIDOS (TABLA TRANSACCIONAL)*/
+CREATE TABLE grupo2.PEDIDOS (
+	id_pedido  varchar(10) NOT NULL CONSTRAINT pk_pedidos PRIMARY KEY (id_pedido) , 
+	fecha_pedido datetime ,  
+	estado_pedido char(1),
+	id_tipo_transporte varchar(10),
+	id_cliente varchar(10)
+ )
+
+/* DETALLE_PEDIDO (TABLA TRANSACCIONAL)*/
+CREATE TABLE grupo2.DETALLE_PEDIDO (
+	id_detalle_pedido  varchar(10) NOT NULL CONSTRAINT pk_detalle_pedido PRIMARY KEY (id_detalle_pedido), 
+	cantidad_solicitada int,
+	fecha_entrega datetime,
+	cantidad_entregada int,
+	id_producto varchar(10),
+	id_pedido varchar(10)
+ )
+
+/* CLIENTE (TABLA TRANSACCIONAL)*/
+CREATE TABLE grupo2.CLIENTE (
+	id_cliente  varchar(10) NOT NULL CONSTRAINT pk_cliente PRIMARY KEY (id_cliente), 
+	id_ubigeo   varchar(10) , 
+	dni char(8) ,
+	telefono char(9), 
+	direccion varchar(max),
+	nombre varchar(max)
+ )
+
+
+/*CREACIÓN DE FK*/
+
+/*RELACIÓN CLIENTE <> UBIGEO*/
+
+alter table grupo2.CLIENTE
+add constraint fk_grupo2_cliente_ubigeo foreign key (id_ubigeo) references grupo2.UBIGEO (id_ubigeo)
+
+/*RELACIÓN PEDIDOS <> TIPO TRANSPORTE*/
+alter table grupo2.PEDIDOS
+add constraint fk_grupo2_pedidos_tipo_transporte foreign key (id_tipo_transporte) references grupo2.TIPO_TRANSPORTE (id_tipo_transporte)
+
+/*RELACIÓN PEDIDOS <> CLIENTE*/
+alter table grupo2.PEDIDOS
+add constraint fk_grupo2_pedidos_cliente foreign key (id_cliente) references grupo2.CLIENTE(id_cliente)
+
+/*RELACIÓN DETALLE PEDIDO <> PRODUCTO*/
+alter table grupo2.DETALLE_PEDIDO
+add constraint fk_grupo2_detalle_pedido_producto foreign key (id_producto) references grupo2.PRODUCTOS (id_producto)
+
+/*RELACIÓN DETALLE PEDIDO <> PEDIDO*/
+alter table grupo2.DETALLE_PEDIDO
+add constraint fk_grupo2_detalle_pedido_pedido foreign key (id_pedido) references grupo2.PEDIDOS(id_pedido)
+
+
