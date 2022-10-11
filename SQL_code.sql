@@ -69,6 +69,13 @@ CREATE TABLE grupo2.DETALLE_PEDIDO (
 	id_pedido varchar(10)
  )
 
+--se incluyeron las columnas infull y otif como parte del cálculo de los KPIS usados.
+alter table grupo2.DETALLE_PEDIDO
+add ontime as (CASE WHEN DATEDIFF(day, fecha_entrega_ofrec, fecha_entrega_real) > 0 THEN 0 ELSE 1 END)
+
+alter table grupo2.DETALLE_PEDIDO
+add infull as (CASE WHEN cantidad_solicitada=cantidad_entregada THEN 1 ELSE 0 END)
+
 /* CLIENTE (TABLA TRANSACCIONAL)*/
 CREATE TABLE grupo2.CLIENTE (
 	id_cliente  varchar(10) NOT NULL CONSTRAINT pk_cliente PRIMARY KEY (id_cliente), 
